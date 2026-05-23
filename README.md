@@ -174,7 +174,7 @@ Project ini dibuat untuk pembelajaran dan pengembangan sistem perpustakaan digit
 
 **Amelanov Destyawanda**  
 Universitas Negeri Surabaya  
-Jurusan Teknologi Informasi
+Jurusan Teknik Informatika
 
 ---
 
