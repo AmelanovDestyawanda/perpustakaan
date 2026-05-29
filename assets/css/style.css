@@ -578,6 +578,12 @@ tbody tr:hover td { background: rgba(196,154,60,0.04); }
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 520px;
+
+  /* Kunci: tinggi maksimal + flex column agar body bisa scroll */
+  max-height: calc(100vh - 3rem);
+  display: flex;
+  flex-direction: column;
+
   box-shadow: var(--shadow-lg);
   transform: translateY(20px);
   transition: transform var(--transition);
@@ -591,6 +597,7 @@ tbody tr:hover td { background: rgba(196,154,60,0.04); }
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid rgba(196,154,60,0.15);
+  flex-shrink: 0; /* header tidak ikut menyusut */
 }
 
 .modal-title {
@@ -609,13 +616,26 @@ tbody tr:hover td { background: rgba(196,154,60,0.04); }
 .modal-close:hover { color: var(--brown); background: rgba(196,154,60,0.1); }
 .modal-close svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-.modal-body { padding: 1.5rem; }
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;   /* scroll hanya di sini */
+  flex: 1;            /* ambil sisa ruang */
+
+  /* Scrollbar tipis sesuai tema */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(196,154,60,0.3) transparent;
+}
+.modal-body::-webkit-scrollbar       { width: 5px; }
+.modal-body::-webkit-scrollbar-track { background: transparent; }
+.modal-body::-webkit-scrollbar-thumb { background: rgba(196,154,60,0.3); border-radius: 5px; }
+
 .modal-footer {
   padding: 1rem 1.5rem;
   border-top: 1px solid rgba(196,154,60,0.15);
   display: flex;
   justify-content: flex-end;
   gap: 0.65rem;
+  flex-shrink: 0; /* footer tidak ikut menyusut */
 }
 
 /* ── Empty State ────────────────────────────────────────── */

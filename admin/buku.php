@@ -6,6 +6,18 @@ requireAdmin();
 $page_title  = 'Manajemen Buku';
 $active_menu = 'buku';
 
+if (($_GET['aksi'] ?? '') === 'template') {
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="template_import_buku.csv"');
+    $out = fopen('php://output', 'w');
+    fwrite($out, "\xEF\xBB\xBF"); //BOM agar excel baca UTF-8 dengan benar
+    fputcsv($out, ['judul','penulis','penerbit','tahun_terbit','isbn','kategori','stok','deskripsi']);
+    fputcsv($out, ['Laskar Pelangi','Andrea Hirata','Bentang Pustaka','2005','978-979-1227-46-3','Fiksi','3','Panduan membangun kebiasaan baik']);
+    fputcsv($out, ['Clean Code','Robert C. Martin','Prentice Hall','2008','978-0-13-2350888-4','Sains & Teknologi','2','']);
+    fclose($out);
+    exit;
+}
+
 // Handle aksi POST (tambah/edit/hapus)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $aksi = $_POST['aksi'] ?? '';
@@ -181,7 +193,7 @@ $flash     = getFlash();
     <form method="POST">
       <input type="hidden" name="aksi" value="tambah"/>
       <div class="modal-body">
-        <?php include '_form_buku.php'; ?>
+        <?php include __DIR__ . '/_form_buku.php'; ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" data-modal-close="modal-tambah">Batal</button>
@@ -204,7 +216,7 @@ $flash     = getFlash();
       <input type="hidden" name="aksi" value="edit"/>
       <input type="hidden" name="id" id="edit-id"/>
       <div class="modal-body">
-        <?php include '_form_buku.php'; ?>
+        <?php include __DIR__ . '/_form_buku.php'; ?>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" data-modal-close="modal-edit">Batal</button>
