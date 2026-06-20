@@ -23,10 +23,8 @@ try {
     ];
     $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
 } catch (PDOException $e) {
-    die(json_encode([
-        'status'  => 'error',
-        'message' => 'Koneksi database gagal: ' . $e->getMessage()
-    ]));
+    error_log($e->getMessage());
+    die('Koneksi database gagal.');
 }
 
 // ============================================================

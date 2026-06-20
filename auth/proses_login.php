@@ -33,6 +33,8 @@ $_SESSION['user_nama'] = $user['nama'];
 $_SESSION['user_role'] = $user['role'];
 $_SESSION['username']  = $user['username'];
 
+session_regenerate_id(true);
+
 // Redirect sesuai role
 if ($user['role'] === 'admin') {
     header('Location: ../admin/dashboard.php');

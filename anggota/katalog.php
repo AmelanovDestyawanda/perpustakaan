@@ -8,9 +8,9 @@ $active_menu = 'katalog';
 $user_id     = $_SESSION['user_id'];
 
 // Filter & Search
-$search          = trim($_GET['q'] ?? '');
-$kategori_filter = (int)($_GET['kategori'] ?? 0);
-$status_filter   = $_GET['stok'] ?? ''; // 'tersedia' | ''
+$search          = trim($_POST['q'] ?? '');
+$kategori_filter = (int)($_POST['kategori'] ?? 0);
+$status_filter   = $_POST['stok'] ?? ''; // 'tersedia' | ''
 
 $where  = ['1=1'];
 $params = [];
@@ -25,6 +25,17 @@ if ($kategori_filter) {
 }
 if ($status_filter === 'tersedia') {
     $where[] = "b.stok_tersedia > 0";
+}
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (
+        !isset($_POST['csrf_token']) ||
+        !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])
+    ) {
+        die('CSRF detected');
+    }
 }
 
 $sql = "
@@ -260,7 +271,7 @@ $flash     = getFlash();
 
       <!-- Filter & Search Bar -->
       <div class="card" style="margin-bottom:1.25rem; padding:1rem 1.25rem;">
-        <form method="GET" id="filter-form">
+        <form method="POST" id="filter-form">
           <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center;">
 
             <!-- Search -->
@@ -268,6 +279,7 @@ $flash     = getFlash();
               <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input type="text" name="q" placeholder="Cari judul, penulis, penerbit…" value="<?= e($search) ?>" style="width:100%;"/>
             </div>
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
             <!-- Filter kategori -->
             <select name="kategori" onchange="this.form.submit()"
@@ -280,10 +292,14 @@ $flash     = getFlash();
 
             <!-- Filter stok -->
             <div class="filter-chips">
-              <a href="?q=<?= urlencode($search) ?>&kategori=<?= $kategori_filter ?>&stok="
-                class="chip <?= $status_filter === '' ? 'active' : '' ?>">Semua</a>
-              <a href="?q=<?= urlencode($search) ?>&kategori=<?= $kategori_filter ?>&stok=tersedia"
-                class="chip <?= $status_filter === 'tersedia' ? 'active' : '' ?>">Tersedia</a>
+              <button type="submit" name="stok" value=""
+                  class="chip <?= $status_filter === '' ? 'active' : '' ?>">
+                  Semua
+              </button>
+              <button type="submit" name="stok" value="tersedia"
+                  class="chip <?= $status_filter === 'tersedia' ? 'active' : '' ?>">
+                  Tersedia
+              </button>
             </div>
 
             <!-- Tombol cari -->
